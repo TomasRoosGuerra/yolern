@@ -1,0 +1,260 @@
+{
+  "id": "root",
+  "name": "My Knowledge",
+  "children": [
+    {
+      "id": "1759217191149",
+      "name": "Körkort",
+      "children": [
+        {
+          "id": "1759155341697",
+          "name": "Regler",
+          "children": [
+            {
+              "id": "1759216402625",
+              "name": "Körfält",
+              "children": [
+                {
+                  "id": "52563625-1d8d-4d51-a576-85a9ada55038",
+                  "name": "Väg",
+                  "children": [
+                    {
+                      "id": "8b529bdf-c8f2-4665-b555-adfe4b61f13c",
+                      "name": "Körbana",
+                      "children": [
+                        {
+                          "id": "39718c8d-ef28-49b5-8420-bf18e3972c68",
+                          "name": "Körfält",
+                          "children": [],
+                          "status": "no-status",
+                          "isExpanded": true
+                        }
+                      ],
+                      "status": "no-status",
+                      "isExpanded": true
+                    },
+                    {
+                      "id": "e751e864-25f9-4efc-bfb6-ef54ad6a587c",
+                      "name": "Vägren",
+                      "children": [],
+                      "status": "no-status",
+                      "isExpanded": true
+                    }
+                  ],
+                  "status": "no-status",
+                  "isExpanded": true
+                }
+              ],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "1759216413372",
+              "name": "Väjningsregler",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "1759216418090",
+              "name": "Filer",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "1759216449572",
+              "name": "Passager",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "1759216459822",
+              "name": "Cirkulationsplats",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "1759216482288",
+              "name": "stanna och parkera",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "1759216507921",
+              "name": "Landsväg",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "1759216518106",
+              "name": "Motorväg och motortrafikled",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "1759216528472",
+              "name": "Omkörningar",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "1759216534873",
+              "name": "Järnvägskorsningar",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "1759217118399",
+              "name": "Speciella gator",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "1759217120865",
+              "name": "Vinter",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            }
+          ],
+          "status": "no-status",
+          "isExpanded": true
+        },
+        {
+          "id": "98d2a006-3cbc-4a04-95df-97cbdde8367b",
+          "name": "Människan",
+          "children": [
+            {
+              "id": "f884185f-8b65-45c3-845c-aafb5f269e39",
+              "name": "Mognad",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "ac78d581-3b59-4d37-8a30-652951d06b49",
+              "name": "Alkohol",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            }
+          ],
+          "status": "no-status",
+          "isExpanded": false
+        },
+        {
+          "id": "c706215d-d441-4094-8cf6-ea7661072eec",
+          "name": "Fordon",
+          "children": [
+            {
+              "id": "e7d2a8a5-a267-4ad4-b233-a6a73342099c",
+              "name": "Fordonstyper",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "99f339ac-935c-4ac0-9b44-7ba163efc699",
+              "name": "Bromspedal",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "fc22e31d-0bd5-435e-b79d-2aa1950aadd5",
+              "name": "Däck",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "e7e9a1ae-dd46-46e2-976a-99e708564be0",
+              "name": "Ratt",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "c488d15c-8d38-4df9-b31c-7f0cdf7d33e5",
+              "name": "krockkudde",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "470262c8-99d5-4b22-a8b6-cbb78fb5c0dc",
+              "name": "Barnstol",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "596b7c3a-1d73-49bf-baed-24ece887c5e1",
+              "name": "Längder",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "dbcbb87e-a77a-49ad-a2d5-4a46868396f5",
+              "name": "Dragkrok",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "a7215c53-8b46-4e49-8215-7873f3e7e4a9",
+              "name": "Strålkastare",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "7daf0f71-962c-4c58-bc73-f5745ec41e5c",
+              "name": "Besiktning",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "11f967a0-e463-4589-92fe-679f06698d69",
+              "name": "Certifikat",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "364ec700-caf0-473c-bbae-4d7420bfd62b",
+              "name": "Register",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            },
+            {
+              "id": "199557ec-0889-4735-be50-ca08ef2b685e",
+              "name": "Undersökning",
+              "children": [],
+              "status": "no-status",
+              "isExpanded": true
+            }
+          ],
+          "status": "no-status",
+          "isExpanded": false
+        }
+      ],
+      "status": "no-status",
+      "isExpanded": true
+    }
+  ],
+  "status": "no-status",
+  "isExpanded": true
+}
