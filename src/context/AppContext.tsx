@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useEffect, useReducer, useState } from "react";
+import { User } from "firebase/auth";
+import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { ActionHistory, Card, SyncStatus, TreeNode } from "../types";
-import { generateCardsFromTree } from "../utils/treeUtils";
 import { authService } from "../services/authService";
 import { firestoreService } from "../services/firestoreService";
-import { User } from "firebase/auth";
+import { ActionHistory, Card, SyncStatus, TreeNode } from "../types";
+import { generateCardsFromTree } from "../utils/treeUtils";
 
 interface AppState {
   treeData: TreeNode;
@@ -371,7 +371,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const unsubscribe = authService.onAuthStateChange((user) => {
       dispatch({ type: "SET_USER", payload: user });
       dispatch({ type: "SET_LOADING", payload: false });
-      
+
       if (user) {
         // Load user data from Firestore
         loadUserDataFromFirestore();
@@ -386,10 +386,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const loadUserDataFromFirestore = async () => {
     try {
-      dispatch({ type: "SET_SYNC_STATUS", payload: { state: "syncing", message: "Syncing with cloud..." } });
-      
+      dispatch({
+        type: "SET_SYNC_STATUS",
+        payload: { state: "syncing", message: "Syncing with cloud..." },
+      });
+
       const firestoreTreeData = await firestoreService.getUserData();
-      
+
       if (firestoreTreeData.length > 0) {
         // Convert array to tree structure
         const treeStructure = {
@@ -400,38 +403,56 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           isExpanded: true,
         };
         dispatch({ type: "SET_TREE", payload: treeStructure });
-        dispatch({ type: "SET_SYNC_STATUS", payload: { state: "synced", message: "Synced with cloud ☁️" } });
+        dispatch({
+          type: "SET_SYNC_STATUS",
+          payload: { state: "synced", message: "Synced with cloud ☁️" },
+        });
       } else {
         // No cloud data, use local data
-        dispatch({ type: "SET_SYNC_STATUS", payload: { state: "synced", message: "Using local data" } });
+        dispatch({
+          type: "SET_SYNC_STATUS",
+          payload: { state: "synced", message: "Using local data" },
+        });
       }
     } catch (error) {
       console.error("Failed to load from Firestore:", error);
-      dispatch({ type: "SET_SYNC_STATUS", payload: { state: "error", message: "Sync failed, using local data" } });
+      dispatch({
+        type: "SET_SYNC_STATUS",
+        payload: { state: "error", message: "Sync failed, using local data" },
+      });
     }
   };
 
   const saveToFirestore = async (treeData: TreeNode) => {
     if (!authService.isAuthenticated()) return;
-    
+
     try {
-      dispatch({ type: "SET_SYNC_STATUS", payload: { state: "syncing", message: "Saving to cloud..." } });
-      
+      dispatch({
+        type: "SET_SYNC_STATUS",
+        payload: { state: "syncing", message: "Saving to cloud..." },
+      });
+
       // Convert tree to array format for Firestore
       const treeArray = treeData.children || [];
       await firestoreService.saveUserData(treeArray);
-      
-      dispatch({ type: "SET_SYNC_STATUS", payload: { state: "synced", message: "Saved to cloud ☁️" } });
+
+      dispatch({
+        type: "SET_SYNC_STATUS",
+        payload: { state: "synced", message: "Saved to cloud ☁️" },
+      });
     } catch (error) {
       console.error("Failed to save to Firestore:", error);
-      dispatch({ type: "SET_SYNC_STATUS", payload: { state: "error", message: "Save failed" } });
+      dispatch({
+        type: "SET_SYNC_STATUS",
+        payload: { state: "error", message: "Save failed" },
+      });
     }
   };
 
   // Sync localStorage with state
   useEffect(() => {
     setTreeData(state.treeData);
-    
+
     // Save to Firestore if authenticated
     if (authService.isAuthenticated()) {
       saveToFirestore(state.treeData);

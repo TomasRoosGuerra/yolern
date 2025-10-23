@@ -1,26 +1,34 @@
-import { 
-  signInAnonymously, 
-  signInWithEmailAndPassword, 
+import {
   createUserWithEmailAndPassword,
-  signOut,
   onAuthStateChanged,
-  User
-} from 'firebase/auth';
-import { auth } from '../config/firebase';
-import { firestoreService } from './firestoreService';
+  signInAnonymously,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  User,
+  GoogleAuthProvider,
+} from "firebase/auth";
+import { auth } from "../config/firebase";
+import { firestoreService } from "./firestoreService";
 
 class AuthService {
   private currentUser: User | null = null;
   private authStateListeners: ((user: User | null) => void)[] = [];
+  private googleProvider: GoogleAuthProvider;
 
   constructor() {
+    // Initialize Google Auth Provider
+    this.googleProvider = new GoogleAuthProvider();
+    this.googleProvider.addScope('email');
+    this.googleProvider.addScope('profile');
+
     // Listen for auth state changes
     onAuthStateChanged(auth, (user) => {
       this.currentUser = user;
       firestoreService.setUserId(user?.uid || null);
-      
+
       // Notify all listeners
-      this.authStateListeners.forEach(listener => listener(user));
+      this.authStateListeners.forEach((listener) => listener(user));
     });
   }
 
@@ -30,7 +38,18 @@ class AuthService {
       const result = await signInAnonymously(auth);
       return result.user;
     } catch (error) {
-      console.error('Anonymous sign-in failed:', error);
+      console.error("Anonymous sign-in failed:", error);
+      throw error;
+    }
+  }
+
+  // Google authentication
+  async signInWithGoogle(): Promise<User> {
+    try {
+      const result = await signInWithPopup(auth, this.googleProvider);
+      return result.user;
+    } catch (error) {
+      console.error("Google sign-in failed:", error);
       throw error;
     }
   }
@@ -41,17 +60,21 @@ class AuthService {
       const result = await signInWithEmailAndPassword(auth, email, password);
       return result.user;
     } catch (error) {
-      console.error('Email sign-in failed:', error);
+      console.error("Email sign-in failed:", error);
       throw error;
     }
   }
 
   async signUpWithEmail(email: string, password: string): Promise<User> {
     try {
-      const result = await createUserWithEmailAndPassword(auth, email, password);
+      const result = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       return result.user;
     } catch (error) {
-      console.error('Email sign-up failed:', error);
+      console.error("Email sign-up failed:", error);
       throw error;
     }
   }
@@ -62,7 +85,7 @@ class AuthService {
       await signOut(auth);
       firestoreService.setUserId(null);
     } catch (error) {
-      console.error('Sign-out failed:', error);
+      console.error("Sign-out failed:", error);
       throw error;
     }
   }
@@ -85,7 +108,7 @@ class AuthService {
   // Listen to auth state changes
   onAuthStateChange(callback: (user: User | null) => void): () => void {
     this.authStateListeners.push(callback);
-    
+
     // Return unsubscribe function
     return () => {
       const index = this.authStateListeners.indexOf(callback);
@@ -97,11 +120,13 @@ class AuthService {
 
   // Get user display name or email
   getUserDisplayName(): string {
-    if (!this.currentUser) return 'Guest';
-    
-    return this.currentUser.displayName || 
-           this.currentUser.email?.split('@')[0] || 
-           'Anonymous User';
+    if (!this.currentUser) return "Guest";
+
+    return (
+      this.currentUser.displayName ||
+      this.currentUser.email?.split("@")[0] ||
+      "Anonymous User"
+    );
   }
 
   // Check if user is anonymous

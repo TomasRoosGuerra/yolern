@@ -1,12 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Brain, TreePine } from "lucide-react";
 import { useState } from "react";
+import { AuthComponent } from "./components/AuthComponent";
 import { CardsView } from "./components/CardsView";
 import { TreeView } from "./components/TreeView";
-import { AuthComponent } from "./components/AuthComponent";
+import "./config/firebase"; // Initialize Firebase
 import { AppProvider, useApp } from "./context/AppContext";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
-import "./config/firebase"; // Initialize Firebase
 
 function AppContent() {
   const { state } = useApp();
@@ -36,25 +36,29 @@ function AppContent() {
             justify-content: center;
             z-index: 9999;
           }
-          
+
           .loading-content {
             text-align: center;
             color: #666;
           }
-          
+
           .loading-spinner {
             width: 40px;
             height: 40px;
             border: 4px solid #e5e5e7;
-            border-top: 4px solid #007AFF;
+            border-top: 4px solid #007aff;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 1rem;
           }
-          
+
           @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+              transform: rotate(0deg);
+            }
+            100% {
+              transform: rotate(360deg);
+            }
           }
         `}</style>
       </div>
@@ -91,7 +95,7 @@ function AppContent() {
     <div className="app">
       {/* Show auth component if not authenticated */}
       {!state.isAuthenticated && <AuthComponent />}
-      
+
       <header className="app-header">
         <h1>Yolern</h1>
         <p className="app-description">
@@ -152,10 +156,9 @@ function AppContent() {
 
       <footer className="app-footer">
         <p>
-          {state.isAuthenticated 
-            ? "Your data syncs across all devices ☁️" 
-            : "Sign in to sync your data across devices"
-          }
+          {state.isAuthenticated
+            ? "Your data syncs across all devices ☁️"
+            : "Sign in to sync your data across devices"}
         </p>
       </footer>
     </div>
