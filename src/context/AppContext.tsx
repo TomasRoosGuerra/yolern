@@ -1,7 +1,10 @@
-import React, { createContext, useContext, useEffect, useReducer } from "react";
+import React, { createContext, useContext, useEffect, useReducer, useState } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { ActionHistory, Card, SyncStatus, TreeNode } from "../types";
 import { generateCardsFromTree } from "../utils/treeUtils";
+import { authService } from "../services/authService";
+import { firestoreService } from "../services/firestoreService";
+import { User } from "firebase/auth";
 
 interface AppState {
   treeData: TreeNode;
@@ -17,6 +20,9 @@ interface AppState {
     currentIndex: number;
     isActive: boolean;
   };
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 type AppAction =
@@ -37,7 +43,9 @@ type AppAction =
   | { type: "SET_SYNC_STATUS"; payload: SyncStatus }
   | { type: "START_STUDY_SESSION"; payload: Card[] }
   | { type: "END_STUDY_SESSION" }
-  | { type: "NEXT_CARD" };
+  | { type: "NEXT_CARD" }
+  | { type: "SET_USER"; payload: User | null }
+  | { type: "SET_LOADING"; payload: boolean };
 
 const initialState: AppState = {
   treeData: {
@@ -97,6 +105,9 @@ const initialState: AppState = {
     currentIndex: 0,
     isActive: false,
   },
+  user: null,
+  isAuthenticated: false,
+  isLoading: true,
 };
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -316,6 +327,19 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return state;
     }
 
+    case "SET_USER":
+      return {
+        ...state,
+        user: action.payload,
+        isAuthenticated: action.payload !== null,
+      };
+
+    case "SET_LOADING":
+      return {
+        ...state,
+        isLoading: action.payload,
+      };
+
     default:
       return state;
   }
@@ -342,9 +366,76 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     cardsData,
   });
 
+  // Firebase authentication and sync
+  useEffect(() => {
+    const unsubscribe = authService.onAuthStateChange((user) => {
+      dispatch({ type: "SET_USER", payload: user });
+      dispatch({ type: "SET_LOADING", payload: false });
+      
+      if (user) {
+        // Load user data from Firestore
+        loadUserDataFromFirestore();
+      } else {
+        // Fall back to localStorage
+        dispatch({ type: "SET_TREE", payload: treeData });
+      }
+    });
+
+    return unsubscribe;
+  }, []);
+
+  const loadUserDataFromFirestore = async () => {
+    try {
+      dispatch({ type: "SET_SYNC_STATUS", payload: { state: "syncing", message: "Syncing with cloud..." } });
+      
+      const firestoreTreeData = await firestoreService.getUserData();
+      
+      if (firestoreTreeData.length > 0) {
+        // Convert array to tree structure
+        const treeStructure = {
+          id: "root",
+          name: "My Knowledge",
+          children: firestoreTreeData,
+          status: "no-status" as const,
+          isExpanded: true,
+        };
+        dispatch({ type: "SET_TREE", payload: treeStructure });
+        dispatch({ type: "SET_SYNC_STATUS", payload: { state: "synced", message: "Synced with cloud ☁️" } });
+      } else {
+        // No cloud data, use local data
+        dispatch({ type: "SET_SYNC_STATUS", payload: { state: "synced", message: "Using local data" } });
+      }
+    } catch (error) {
+      console.error("Failed to load from Firestore:", error);
+      dispatch({ type: "SET_SYNC_STATUS", payload: { state: "error", message: "Sync failed, using local data" } });
+    }
+  };
+
+  const saveToFirestore = async (treeData: TreeNode) => {
+    if (!authService.isAuthenticated()) return;
+    
+    try {
+      dispatch({ type: "SET_SYNC_STATUS", payload: { state: "syncing", message: "Saving to cloud..." } });
+      
+      // Convert tree to array format for Firestore
+      const treeArray = treeData.children || [];
+      await firestoreService.saveUserData(treeArray);
+      
+      dispatch({ type: "SET_SYNC_STATUS", payload: { state: "synced", message: "Saved to cloud ☁️" } });
+    } catch (error) {
+      console.error("Failed to save to Firestore:", error);
+      dispatch({ type: "SET_SYNC_STATUS", payload: { state: "error", message: "Save failed" } });
+    }
+  };
+
   // Sync localStorage with state
   useEffect(() => {
     setTreeData(state.treeData);
+    
+    // Save to Firestore if authenticated
+    if (authService.isAuthenticated()) {
+      saveToFirestore(state.treeData);
+    }
   }, [state.treeData, setTreeData]);
 
   useEffect(() => {
