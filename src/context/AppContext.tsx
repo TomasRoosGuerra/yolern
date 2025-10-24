@@ -388,7 +388,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     try {
       dispatch({
         type: "SET_SYNC_STATUS",
-        payload: { state: "syncing", message: "Syncing with cloud..." },
+        payload: { state: "syncing", message: "Loading from cloud..." },
       });
 
       const firestoreTreeData = await firestoreService.getUserData();
@@ -405,20 +405,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         dispatch({ type: "SET_TREE", payload: treeStructure });
         dispatch({
           type: "SET_SYNC_STATUS",
-          payload: { state: "synced", message: "Synced with cloud ☁️" },
+          payload: { state: "synced", message: "Loaded from cloud ☁️" },
         });
       } else {
-        // No cloud data, use local data
+        // No cloud data, keep local data
         dispatch({
           type: "SET_SYNC_STATUS",
-          payload: { state: "synced", message: "Using local data" },
+          payload: { state: "synced", message: "No cloud data, using local" },
         });
       }
     } catch (error) {
       console.error("Failed to load from Firestore:", error);
       dispatch({
         type: "SET_SYNC_STATUS",
-        payload: { state: "error", message: "Sync failed, using local data" },
+        payload: { state: "error", message: "Load failed, using local data" },
       });
     }
   };
@@ -452,12 +452,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Sync localStorage with state
   useEffect(() => {
     setTreeData(state.treeData);
-
-    // Save to Firestore if authenticated
-    if (authService.isAuthenticated()) {
-      saveToFirestore(state.treeData);
-    }
   }, [state.treeData, setTreeData]);
+
+  // Save to Firestore when tree data changes (debounced)
+  useEffect(() => {
+    if (authService.isAuthenticated() && !state.isLoading) {
+      const timeoutId = setTimeout(() => {
+        saveToFirestore(state.treeData);
+      }, 1000); // Debounce for 1 second
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [state.treeData]);
 
   useEffect(() => {
     setCardsData(state.cardsData);

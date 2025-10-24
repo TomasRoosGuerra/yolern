@@ -1,12 +1,12 @@
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   onAuthStateChanged,
   signInAnonymously,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
   User,
-  GoogleAuthProvider,
 } from "firebase/auth";
 import { auth } from "../config/firebase";
 import { firestoreService } from "./firestoreService";
@@ -19,8 +19,8 @@ class AuthService {
   constructor() {
     // Initialize Google Auth Provider
     this.googleProvider = new GoogleAuthProvider();
-    this.googleProvider.addScope('email');
-    this.googleProvider.addScope('profile');
+    this.googleProvider.addScope("email");
+    this.googleProvider.addScope("profile");
 
     // Listen for auth state changes
     onAuthStateChanged(auth, (user) => {

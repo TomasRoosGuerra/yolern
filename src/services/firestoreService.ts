@@ -2,6 +2,7 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -120,7 +121,7 @@ class FirestoreService {
       );
     }
 
-    const snapshot = await getDoc(q as any);
+    const snapshot = await getDocs(q);
     return snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
